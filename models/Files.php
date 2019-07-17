@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
@@ -43,6 +45,18 @@ class Files extends \yii\db\ActiveRecord
      * @var string
      */
     public $web = '@web';
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['uploaded_at'],
+                ],
+            ],
+        ];
+    }
 
     /**
      * {@inheritdoc}

@@ -1,10 +1,7 @@
-<p align="center">
-    <a href="https://github.com/yiisoft" target="_blank">
-        <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">
-    </a>
-    <h1 align="center">Yii 2 Basic Project Template</h1>
-    <br>
-</p>
+<h3>Локально можно поднять с помощью Vagrant
+для этого нужно в фале /vagrant/config/vagrant-local.yml</h3>
+<h3>в блоке github_token указать свой персональный github token
+и при помощи команды vagrant up поднять проект</h3>
 
 Yii 2 Basic Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
 rapidly creating small projects.

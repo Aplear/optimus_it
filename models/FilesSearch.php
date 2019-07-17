@@ -57,6 +57,11 @@ class FilesSearch extends Files
             return $dataProvider;
         }
 
+        $query->joinWith([
+            'user' => function (\yii\db\ActiveQuery $query) {
+                $query->andFilterWhere([User::tableName() . '.id' => \Yii::$app->user->id]);
+            }
+        ]);
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,

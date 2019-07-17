@@ -38,11 +38,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{download} {update} {delete}',
                 'buttons' => [
-                    'drivers-set' => function ($url,$model) {
+                    'download' => function ($url,$model) {
                         return Html::a(
-                            '<span class="glyphicon glyphicon-refresh"></span>',
-                            str_replace('default', 'chains', $url),
-                            [ 'class'=>'modal-btn-drivers-set', 'title' => 'Drivers set', 'aria-label'=>'Drivers set', 'data-pjax' => 0]
+                            '<span class="glyphicon glyphicon-download"></span>',
+                            $url,
+                            [ 'class'=>'modal-btn-download', 'title' => 'Download']
                         );
                     },
                     'update' => function ($url,$model) {

@@ -7,6 +7,7 @@ use app\models\Files;
 use app\models\FilesSearch;
 use yii\bootstrap\ActiveForm;
 use yii\web\Controller;
+use yii\web\MethodNotAllowedHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -16,20 +17,6 @@ use yii\web\Response;
  */
 class FilesController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * Lists all Files models.
@@ -43,19 +30,6 @@ class FilesController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single Files model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
         ]);
     }
 
@@ -123,13 +97,15 @@ class FilesController extends Controller
     /**
      * @param int $id
      */
-    public function actionDownloadFile(int $id)
+    public function actionDownload(int $id)
     {
         $file = Files::findOne($id);
         if (!is_null($file)) {
-            $zipFile = $file->path;
+            $zipFile = Yii::getAlias($file->webroot.$file->path);
             if($zipFile !== false){
                 Yii::$app->getResponse()->sendFile($zipFile);
+                $file->downloaded += 1;
+                $file->save();
             }
         }
     }
@@ -139,14 +115,16 @@ class FilesController extends Controller
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
      * @return Files the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
+     * @throws MethodNotAllowedHttpException
      */
     protected function findModel($id)
     {
         if (($model = Files::findOne($id)) !== null) {
-            return $model;
+            if (Yii::$app->user->id == $model->user_id) {
+                return $model;
+            }
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new MethodNotAllowedHttpException('Not allowed action');
     }
 }
