@@ -38,8 +38,27 @@ class SignupForm extends Model
             ['password', 'string', 'min' => 6],
             ['confirmPassword', 'compare', 'compareAttribute'=>'password', 'message'=>"Passwords don't match"],
             ['captcha', 'required'],
-            ['captcha', 'captcha']
+            ['captcha', 'validateCaptcha'],
         ];
+    }
+
+    /**
+     * @param $attribute
+     */
+    public function validateCaptcha($attribute) {
+
+        $captcha_validate  = new \yii\captcha\CaptchaAction('captcha',Yii::$app->controller);
+
+        if ($this->$attribute){
+
+            $code = $captcha_validate->getVerifyCode();
+
+            if ($this->$attribute!=$code){
+
+                $this->addError($attribute, 'The verification code is incorrect.');
+
+            }
+        }
     }
 
     /**

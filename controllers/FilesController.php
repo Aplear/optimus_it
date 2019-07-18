@@ -6,10 +6,10 @@ use Yii;
 use app\models\Files;
 use app\models\FilesSearch;
 use yii\bootstrap\ActiveForm;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\MethodNotAllowedHttpException;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 
 /**
@@ -17,6 +17,33 @@ use yii\web\Response;
  */
 class FilesController extends Controller
 {
+
+    /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => [
+                            'index',
+                            'create',
+                            'update',
+                            'delete',
+                            'download',
+                            'ajax-view-full-description'
+                        ],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
 
     /**
      * Lists all Files models.
@@ -108,6 +135,29 @@ class FilesController extends Controller
                 $file->save();
             }
         }
+    }
+
+    /**
+     * @param int $id
+     * @return bool|string
+     * @throws MethodNotAllowedHttpException
+     */
+    public function actionAjaxViewFullDescription(int $id)
+    {
+        if (Yii::$app->request->isAjax) {
+            $model = $this->findModel($id);
+            if (!is_null($model)) {
+                //prepare response formate
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return $this->renderPartial('modal_description_view', [
+                    'model' => $model
+                ]);
+            }
+            Yii::error(sprintf('Not found model id %d',$model->id), 'files');
+            return false;
+        }
+
+        throw new MethodNotAllowedHttpException('Not allowed action');
     }
 
     /**

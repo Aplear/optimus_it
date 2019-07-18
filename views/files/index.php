@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use \yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\FilesSearch */
@@ -28,11 +29,39 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'title',
             'extention',
-            'size',
-            'uploaded_at',
-            'downloaded',
-            'description',
-
+            [
+                'attribute' => 'size',
+                'value' => function($model) {
+                    return $model->size . ' MB';
+                },
+                'format' => 'raw'
+            ],
+            [
+                'attribute' => 'uploaded_at',
+                'value' => function($model) {
+                    $items = $model->downloaded??0;
+                    return date('Y-m-d h:i', $model->uploaded_at);
+                },
+                'format' => 'raw'
+            ],
+            [
+                'attribute' => 'downloaded',
+                'value' => function($model) {
+                    $items = $model->downloaded??0;
+                    return $items . ' items';
+                },
+                'format' => 'raw'
+            ],
+            [
+                'attribute' => 'description',
+                'value' => function($model) {
+                    return HTML::tag('a', mb_substr($model->description, 0, 30),[
+                        'href' => '#',
+                        'onclick' => 'getDataByUrl("'.Url::to(['files/ajax-view-full-description', 'id' => $model->id]).'", true);'
+                    ]);
+                },
+                'format' => 'raw'
+            ],
             [
 
                 'class' => 'yii\grid\ActionColumn',
@@ -64,3 +93,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 </div>
+
+<?php
+yii\bootstrap\Modal::begin([
+    'header' => 'Files',
+    'id' => 'modal',
+    'size' => 'modal-md',
+    //keeps from closing modal with esc key or by clicking out of the modal.
+    // user must click cancel or X to close
+    'clientOptions' => ['backdrop' => 'static', 'keyboard' => FALSE]
+]);
+?>
+    <div id='modal-content'>Loading...</div>
+<?php yii\bootstrap\Modal::end(); ?>
+
+<?php $this->registerJsFile('/js/files/index.js', [
+    'depends' => ['app\assets\AppAsset']
+])?>

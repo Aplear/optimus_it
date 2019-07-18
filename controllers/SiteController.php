@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\SignupForm;
 use Yii;
+use yii\bootstrap\ActiveForm;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
@@ -87,11 +88,22 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * @return array|string|Response
+     */
     public function actionSignup()
     {
         $model = new SignupForm();
-
-        if ($model->load(Yii::$app->request->post())) {
+        if(Yii::$app->request->isAjax) {
+            //prepare response formate
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+                return ActiveForm::validate($model);
+            }
+            return [
+                $this->renderAjax('signup', ['model'=>$model])
+            ];
+        } elseif($model->load(Yii::$app->request->post())) {
             if ($user = $model->signup()) {
                 if (Yii::$app->getUser()->login($user)) {
                     return $this->goHome();

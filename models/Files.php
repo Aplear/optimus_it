@@ -83,7 +83,8 @@ class Files extends \yii\db\ActiveRecord
                 'skipOnEmpty' => true,
                 'extensions' => 'doc, docx, xls, xlsx, pdf, jpg, png, rar, zip',
                 'maxSize' => static::MAX_FILE_SIZE,
-                'tooBig' => 'Limit is 200 MB'
+                'tooBig' => 'Limit is 200 MB',
+                'mimeTypes' => 'application/x-rar-compressed, application/zip'
             ],
         ];
     }

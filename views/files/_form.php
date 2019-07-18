@@ -14,8 +14,14 @@ use yii\widgets\ActiveForm;
         'enableAjaxValidation' => true,
         'enableClientValidation' => true,
         'options' => [
-            'enctype' => 'multipart/form-data'
+            'enctype' => 'multipart/form-data',
+            'accept' => [
+                'application/x-rar-compressed',
+                'application/zip',
+                'application/octet-stream'
+            ],
         ],
+
     ]); ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
