@@ -1,7 +1,23 @@
-<h3>Локально можно поднять с помощью Vagrant
-для этого нужно в фале /vagrant/config/vagrant-local.yml</h3>
-<h3>в блоке github_token указать свой персональный github token
-и при помощи команды vagrant up поднять проект</h3>
+## Локально можно поднять с помощью Vagrant
+- для этого нужно в фале /vagrant/config/vagrant-local.yml
+в блоке github_token указать свой персональный github token
+и поднять проект при помощи команды 
+~~~
+vagrant up
+~~~ 
+
+###Для запуска необходимо запустить пакетный менеджер командой > composer install
+- для этого должен быть установлен глобально composer
+~~~
+https://getcomposer.org/download/
+~~~
+###Также нужно выполнить в нутри директории проекта на сервере команду, для этого:
+- Заходим на сервер командой > 
+vagrant ssh 
+- переходим в каталог проекта > 
+cd /app  
+- и выполняем команду миграций > 
+php yii migrate
 
 Yii 2 Basic Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
 rapidly creating small projects.
